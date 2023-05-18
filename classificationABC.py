@@ -43,6 +43,7 @@ def compare_with_limits(x,a,b):
 
 def abc_classification(df,weights_column,a=80, b=95, category_col_name = 'categoria'):
     df[category_col_name] = df[weights_column].apply(lambda x: compare_with_limits(x,a,b))
+    return df
 
 def dataframe_dictionary(complete_dataframe, category_column):
     dict_df = {}
