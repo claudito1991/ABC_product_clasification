@@ -1,16 +1,29 @@
 import pandas as pd
 import xlsxwriter
+import math
 
 
 def load_dataset(path, header=0):
     df = pd.read_excel(path, header=header)
     return df
 
+def calculate_days_of_stock(val):
+    if math.isnan(val):
+        return "SIN VENTA Y SIN STOCK"
+    elif math.isinf(val):
+        return "SIN VENTA"
+    else:
+        return val
+    
 
-def column_with_desired_data(
-    raw_dataframe, art, descrip, vpd, stock, a="", b="", c="", d=""
-):
+
+
+def column_with_desired_data(raw_dataframe, art, descrip, vpd, stock, a="", b="", c="", d=""):
+
     result_df = raw_dataframe[[art, descrip, vpd, stock]]
+    result_df['dias de piso'] = result_df[stock] / result_df[vpd] 
+    result_df['dias de piso'] = result_df['dias de piso'].apply(lambda x: calculate_days_of_stock(x))
+
     if a != "":
         result_df = result_df.rename(columns={art: a})
 
@@ -23,6 +36,7 @@ def column_with_desired_data(
     if d != "":
         result_df = result_df.rename(columns={stock: d})
 
+    
     return result_df
 
 
@@ -79,24 +93,31 @@ def delete_rows_from_df(df, article_column, *args):
     return df
 
 
-def export_excel(df_dict, df_stats, file_name):
+def export_excel(df_dict, df_stats,df_sin_stock, file_name):
+
     writer = pd.ExcelWriter(file_name + ".xlsx", engine="xlsxwriter")
 
     for i in df_dict:
+        df_dict[i] = df_dict[i].applymap(lambda x: round(x,0) if type(x) == float else x)
         df_dict[i].to_excel(writer, sheet_name=i)
         workbook = writer.book
         worksheet = writer.sheets[i]
         cell_format = workbook.add_format({"border": 1})
 
-        for j in range(140):
-            worksheet.set_row(j, 25, cell_format)
-            worksheet.set_column(j, width=10, last_col=12)
-            if j == 2:
+        for j in range(len(df_dict[i])+1):
+            worksheet.set_row(j, 20,cell_format)
+            worksheet.set_column(j, width=18, last_col=12)
+            if j == 1:
+                worksheet.set_row(j, 20,cell_format)
                 worksheet.set_column(j, width=42, last_col=12)
+            
+    
+
+
     df_stats.to_excel(writer, sheet_name="Stats")
-    workbook = writer.book
-    worksheet = writer.sheets[i]
+    df_sin_stock.to_excel(writer, sheet_name="Sin stock")
     cell_format = workbook.add_format({"border": 1})
+
     writer.close()
 
 

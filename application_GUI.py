@@ -42,8 +42,8 @@ while True:
         window["-OUTPUT-"].update("file with articles and price added")
 
     elif event == '-PROCESS-FILES-':
-        df_stats, dictionary_abc = mp.main_process(file_path_pp,pp_art,pp_des,pp_vpd,pp_stock,file_path_price,price_art,price_price)
-        cls.export_excel(dictionary_abc,df_stats,"ABC_PROCESADO")
+        df_stats, dictionary_abc, sin_stock = mp.main_process(file_path_pp,pp_art,pp_des,pp_vpd,pp_stock,file_path_price,price_art,price_price)
+        cls.export_excel(dictionary_abc,df_stats,sin_stock,"ABC_PROCESADO")
         sg.popup('ARCHIVOS PROCESADOS')
     
 
