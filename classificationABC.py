@@ -93,7 +93,7 @@ def delete_rows_from_df(df, article_column, *args):
     return df
 
 
-def export_excel(df_dict, df_stats,df_sin_stock, file_name):
+def export_excel(df_dict, df_stats,df_sin_stock,file_instructions, file_name):
 
     writer = pd.ExcelWriter(file_name + ".xlsx", engine="xlsxwriter")
 
@@ -116,6 +116,7 @@ def export_excel(df_dict, df_stats,df_sin_stock, file_name):
 
     df_stats.to_excel(writer, sheet_name="Stats")
     df_sin_stock.to_excel(writer, sheet_name="Sin stock")
+    text_to_worksheet(file_instructions,'Instrucciones',workbook)
     cell_format = workbook.add_format({"border": 1})
 
     writer.close()
@@ -163,3 +164,16 @@ def abc_statistics(complete_dataframe, classification_column, value_column, a=80
         }
     )
     return df_stats
+
+def read_instructions(file_path): 
+    with open(file_path, "r", encoding="utf-8") as file:
+        file_contents = file.read()
+    lines = file_contents.split("\n")
+    return lines  
+
+def text_to_worksheet(lines_of_text, worksheet_name,workbook):
+    worksheet = workbook.add_worksheet(worksheet_name)
+    for i in range(len(lines_of_text)):    
+        worksheet.write_string(i+2, 1, lines_of_text[i])
+    return worksheet
+    

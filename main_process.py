@@ -2,7 +2,7 @@ import pandas as pd
 import classificationABC as cls
 
 
-def main_process(file_path,art_col_name, descrip_col_name, vpd_col_name, stock_col_name, price_file_path,price_art_col_name, price_price_col_name ):
+def main_process(file_path,art_col_name, descrip_col_name, vpd_col_name, stock_col_name, price_file_path,price_art_col_name, price_price_col_name):
     base_dataframe = cls.load_dataset(file_path)
     df = cls.column_with_desired_data(base_dataframe, art_col_name, descrip_col_name, vpd_col_name, stock_col_name ,a='articulo',b='descripcion',c = 'vpd',d='stock')
     df = cls.delete_rows_from_df(df,'articulo',2731,2776,2705)
@@ -21,4 +21,3 @@ def main_process(file_path,art_col_name, descrip_col_name, vpd_col_name, stock_c
     df_stats = cls.abc_statistics(stock_classified_with_value,'categoria','Valorizado')
     return df_stats, df_dict, df_sin_stock
 
-    

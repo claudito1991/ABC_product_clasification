@@ -3,6 +3,8 @@ import PySimpleGUI as sg
 import main_process as mp
 import classificationABC as cls
 
+file_instructions = cls.read_instructions("instructions.txt")
+
 layout = [
         [[sg.Text("PP nombre col. art.", justification="left", size=17), sg.InputText(default_text = 'ARTÍCULO', justification="left", size=20,key='-IN-PP-ART-'),sg.Text("Precio nombre col. art.", justification="left", size=19), sg.InputText(default_text = 'Artículo', justification="left", size=20,key='-IN-PRICE-ART') ],
         [sg.Text("PP nombre col. descrip.", justification="left", size=17), sg.InputText(default_text = 'DESCRIPCIÓN', justification="left", size=20,key='-IN-PP-DES-'),sg.Text("Precio nombre col. precio", justification="left", size=19), sg.InputText(default_text = 'Precio Neto + I. Internos', justification="left", size=20,key='-IN-PRICE-PRICE') ],
@@ -43,7 +45,7 @@ while True:
 
     elif event == '-PROCESS-FILES-':
         df_stats, dictionary_abc, sin_stock = mp.main_process(file_path_pp,pp_art,pp_des,pp_vpd,pp_stock,file_path_price,price_art,price_price)
-        cls.export_excel(dictionary_abc,df_stats,sin_stock,"ABC_PROCESADO")
+        cls.export_excel(dictionary_abc,df_stats,sin_stock,file_instructions,"ABC_PROCESADO")
         sg.popup('ARCHIVOS PROCESADOS')
     
 
