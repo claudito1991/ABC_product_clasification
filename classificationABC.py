@@ -86,7 +86,8 @@ def stock_with_price(
     df2 = df2.set_index(column_df2)
     result = pd.concat([df1, df2], axis=1, join="inner")
     result[value_column] = result[price_column_name] * result[stock_column_name]
-    result[value_column] = result[value_column].apply(lambda x: int(x))
+    result[value_column] = result[value_column].apply(lambda x: round(x,0))
+    result[stock_column_name] = result[stock_column_name].apply(lambda x: round(x,0))
     return result
 
 
@@ -102,7 +103,7 @@ def export_excel(df_dict, df_stats,df_sin_stock,file_instructions, file_folder_p
     writer = pd.ExcelWriter(f'{file_folder_path}/{file_name}_{generate_date()}_{generate_time_stamp()[-6:]}.xlsx', engine="xlsxwriter")
 
     for i in df_dict:
-        df_dict[i] = df_dict[i].applymap(lambda x: round(x,0) if type(x) == float else x)
+        #df_dict[stock_col_name] = df_dict[stock_col_name].apply(lambda x: round(x,0) if type(x) == float else x)
         df_dict[i].to_excel(writer, sheet_name=i)
         workbook = writer.book
         worksheet = writer.sheets[i]

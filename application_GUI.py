@@ -2,12 +2,18 @@
 import PySimpleGUI as sg
 import main_process as mp
 import classificationABC as cls
+import project_setup as pset
+import instructions as ins
+pset.create_folders("entrada_abc","salida_abc")
 
-
-file_instructions = cls.read_instructions("instructions.txt")
+#file_instructions = cls.read_instructions("instructions.txt")
 output_path = cls.get_folder_path("salida_abc")
 input_path=cls.get_folder_path("entrada_abc")
 
+
+
+
+sg.theme('DarkAmber')
 layout = [
         [[sg.Text("PP nombre col. art.", justification="left", size=20), sg.InputText(default_text = 'ARTÍCULO', justification="left", size=20,key='-IN-PP-ART-'),sg.Text("Precio nombre col. art.", justification="left", size=19), sg.InputText(default_text = 'Artículo', justification="left", size=20,key='-IN-PRICE-ART') ],
         [sg.Text("PP nombre col. descrip.", justification="left", size=20), sg.InputText(default_text = 'DESCRIPCIÓN', justification="left", size=20,key='-IN-PP-DES-'),sg.Text("Precio nombre col. precio", justification="left", size=19), sg.InputText(default_text = 'Precio Neto + I. Internos', justification="left", size=20,key='-IN-PRICE-PRICE') ],
@@ -54,8 +60,10 @@ while True:
         window["-OUTPUT-"].update("file with articles and price added")
 
     elif event == '-PROCESS-FILES-':
+       
         df_stats, dictionary_abc, sin_stock = mp.main_process(file_path_pp,pp_art,pp_des,pp_vpd,pp_stock,file_path_price,price_art,price_price)
         #output_path = values["-IN-OUT-"]
+        file_instructions = ins.read_py_instructions()
         cls.export_excel(dictionary_abc,df_stats,sin_stock,file_instructions,output_path,"ABC_PROCESADO")
         sg.popup(f'ARCHIVOS PROCESADOS en carpeta:{output_path}')
 

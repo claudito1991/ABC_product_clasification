@@ -21,4 +21,6 @@ def main_process(file_path,art_col_name, descrip_col_name, vpd_col_name, stock_c
     df_stats = cls.abc_statistics(stock_classified_with_value,'categoria','Valorizado')
     return df_stats, df_dict, df_sin_stock
 
+
+
  
