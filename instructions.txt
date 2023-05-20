@@ -19,5 +19,8 @@ Target peso porcentual(%): Objetivo de peso de cada categoría según su represe
 al sacar el reporte de punto de pedido. 
 
 
+**Nota: aquellos SKU con stock menor a 1 se redondean a 0 para facilitar su clasificación posterior. 
+
+
 
 

@@ -3,25 +3,34 @@ import PySimpleGUI as sg
 import main_process as mp
 import classificationABC as cls
 
+
 file_instructions = cls.read_instructions("instructions.txt")
+output_path = cls.get_folder_path("salida_abc")
+input_path=cls.get_folder_path("entrada_abc")
 
 layout = [
-        [[sg.Text("PP nombre col. art.", justification="left", size=17), sg.InputText(default_text = 'ARTÍCULO', justification="left", size=20,key='-IN-PP-ART-'),sg.Text("Precio nombre col. art.", justification="left", size=19), sg.InputText(default_text = 'Artículo', justification="left", size=20,key='-IN-PRICE-ART') ],
-        [sg.Text("PP nombre col. descrip.", justification="left", size=17), sg.InputText(default_text = 'DESCRIPCIÓN', justification="left", size=20,key='-IN-PP-DES-'),sg.Text("Precio nombre col. precio", justification="left", size=19), sg.InputText(default_text = 'Precio Neto + I. Internos', justification="left", size=20,key='-IN-PRICE-PRICE') ],
-        [sg.Text("PP nombre col. VPD", justification="left", size=17), sg.InputText(default_text = 'VTA. PROMEDIO', justification="left", size=20,key='-IN-PP-VPD-')],
-        [sg.Text("PP nombre col. stock", justification="left", size=17), sg.InputText(default_text = 'STOCK', justification="left", size=20,key='-IN-PP-STOCK-')],
+        [[sg.Text("PP nombre col. art.", justification="left", size=20), sg.InputText(default_text = 'ARTÍCULO', justification="left", size=20,key='-IN-PP-ART-'),sg.Text("Precio nombre col. art.", justification="left", size=19), sg.InputText(default_text = 'Artículo', justification="left", size=20,key='-IN-PRICE-ART') ],
+        [sg.Text("PP nombre col. descrip.", justification="left", size=20), sg.InputText(default_text = 'DESCRIPCIÓN', justification="left", size=20,key='-IN-PP-DES-'),sg.Text("Precio nombre col. precio", justification="left", size=19), sg.InputText(default_text = 'Precio Neto + I. Internos', justification="left", size=20,key='-IN-PRICE-PRICE') ],
+        [sg.Text("PP nombre col. VPD", justification="left", size=20), sg.InputText(default_text = 'VTA. PROMEDIO', justification="left", size=20,key='-IN-PP-VPD-')],
+        [sg.Text("PP nombre col. stock", justification="left", size=20), sg.InputText(default_text = 'STOCK', justification="left", size=20,key='-IN-PP-STOCK-')],
     ],
     [
         sg.Text("Seleccionar Punto Pedido: ", justification="left", size=20),
         sg.Input(size=40, justification="left"),
-        sg.FileBrowse(key="-IN-PP-"),
+        sg.FileBrowse(key="-IN-PP-", initial_folder = input_path),
     ],
     [
         sg.Text("Seleccionar Precio: ", justification="left", size=20),
         sg.Input(size=40, justification="left"),
-        sg.FileBrowse(key="-IN-PRICE-"),
+        sg.FileBrowse(key="-IN-PRICE-",initial_folder = input_path ),
     ],
-    [sg.Button("Cargar archivos", key="-ADD-FILES-")],[sg.Button("Procesar", key="-PROCESS-FILES-")],
+    [
+        sg.Text("Seleccionar Ruta output: ", justification="left", size=20),
+        sg.Input(size=40, justification="left"),
+        sg.FolderBrowse(key="-IN-OUT-",initial_folder = output_path ),
+    ],
+    [sg.Button("Cargar archivos", key="-ADD-FILES-", size=12), sg.Button("Procesar", key="-PROCESS-FILES-",size=12)],
+    [sg.Button('Salir', size=12)],
     [sg.Text("", key="-OUTPUT-")],
 ]
 
@@ -45,8 +54,12 @@ while True:
 
     elif event == '-PROCESS-FILES-':
         df_stats, dictionary_abc, sin_stock = mp.main_process(file_path_pp,pp_art,pp_des,pp_vpd,pp_stock,file_path_price,price_art,price_price)
-        cls.export_excel(dictionary_abc,df_stats,sin_stock,file_instructions,"ABC_PROCESADO")
+        #output_path = values["-IN-OUT-"]
+        cls.export_excel(dictionary_abc,df_stats,sin_stock,file_instructions,output_path,"ABC_PROCESADO")
         sg.popup('ARCHIVOS PROCESADOS')
+
+    elif event == sg.WINDOW_CLOSED or event == 'Salir':
+        break
     
 
 window.close()

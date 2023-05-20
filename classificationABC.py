@@ -1,7 +1,9 @@
 import pandas as pd
 import xlsxwriter
 import math
-
+import time
+from datetime import datetime
+import os
 
 def load_dataset(path, header=0):
     df = pd.read_excel(path, header=header)
@@ -13,7 +15,7 @@ def calculate_days_of_stock(val):
     elif math.isinf(val):
         return "SIN VENTA"
     else:
-        return val
+        return round(val)
     
 
 
@@ -21,6 +23,7 @@ def calculate_days_of_stock(val):
 def column_with_desired_data(raw_dataframe, art, descrip, vpd, stock, a="", b="", c="", d=""):
 
     result_df = raw_dataframe[[art, descrip, vpd, stock]]
+    result_df[stock] =  result_df[stock].apply(lambda x: round(x) if x<1 else x) 
     result_df['dias de piso'] = result_df[stock] / result_df[vpd] 
     result_df['dias de piso'] = result_df['dias de piso'].apply(lambda x: calculate_days_of_stock(x))
 
@@ -88,14 +91,15 @@ def stock_with_price(
 
 
 def delete_rows_from_df(df, article_column, *args):
+
     for i in args:
         df = df[df[article_column] != i]
     return df
 
 
-def export_excel(df_dict, df_stats,df_sin_stock,file_instructions, file_name):
+def export_excel(df_dict, df_stats,df_sin_stock,file_instructions, file_folder_path,file_name):
 
-    writer = pd.ExcelWriter(file_name + ".xlsx", engine="xlsxwriter")
+    writer = pd.ExcelWriter(f'{file_folder_path}/{file_name}_{generate_date()}_{generate_time_stamp()[-6:]}.xlsx', engine="xlsxwriter")
 
     for i in df_dict:
         df_dict[i] = df_dict[i].applymap(lambda x: round(x,0) if type(x) == float else x)
@@ -177,3 +181,19 @@ def text_to_worksheet(lines_of_text, worksheet_name,workbook):
         worksheet.write_string(i+2, 1, lines_of_text[i])
     return worksheet
     
+def generate_time_stamp():
+    timestamp = time.time()
+    timestamp_string = str(timestamp)
+    return timestamp_string
+
+
+
+def generate_date():
+    fecha_actual = datetime.now()
+    fecha_string = fecha_actual.strftime("%d-%m-%Y")
+    return fecha_string
+
+def get_folder_path(folder_name):
+    current_dir = os.getcwd()
+    folder_path = os.path.join(current_dir, folder_name)
+    return folder_path
