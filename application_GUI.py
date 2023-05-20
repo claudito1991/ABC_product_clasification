@@ -24,11 +24,12 @@ layout = [
         sg.Input(size=40, justification="left"),
         sg.FileBrowse(key="-IN-PRICE-",initial_folder = input_path ),
     ],
-    [
-        sg.Text("Seleccionar Ruta output: ", justification="left", size=20),
-        sg.Input(size=40, justification="left"),
-        sg.FolderBrowse(key="-IN-OUT-",initial_folder = output_path ),
-    ],
+
+    # [
+    #     sg.Text("Seleccionar Ruta output: ", justification="left", size=20),
+    #     sg.Input(size=40, justification="left"),
+    #     sg.FolderBrowse(key="-IN-OUT-",initial_folder = output_path ),
+    # ],
     [sg.Button("Cargar archivos", key="-ADD-FILES-", size=12), sg.Button("Procesar", key="-PROCESS-FILES-",size=12)],
     [sg.Button('Salir', size=12)],
     [sg.Text("", key="-OUTPUT-")],
@@ -56,7 +57,8 @@ while True:
         df_stats, dictionary_abc, sin_stock = mp.main_process(file_path_pp,pp_art,pp_des,pp_vpd,pp_stock,file_path_price,price_art,price_price)
         #output_path = values["-IN-OUT-"]
         cls.export_excel(dictionary_abc,df_stats,sin_stock,file_instructions,output_path,"ABC_PROCESADO")
-        sg.popup('ARCHIVOS PROCESADOS')
+        sg.popup(f'ARCHIVOS PROCESADOS en carpeta:{output_path}')
+
 
     elif event == sg.WINDOW_CLOSED or event == 'Salir':
         break
